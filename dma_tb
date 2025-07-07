@@ -1,0 +1,76 @@
+import dma::*;
+import Vector::*;
+import RegFile::*;
+import ClientServer::*;
+import GetPut::*;
+import Connectable::*;
+import StmtFSM::*;
+
+(* synthesize *)
+module mkDma_tb();
+  RegFile#(Bit#(32), Bit#(32)) temp_mem_src <- mkRegFileLoad("input_data.hex", 0, 255);
+  RegFile#(Bit#(32), Bit#(32)) temp_mem_dst <- mkRegFileLoad("input_data.hex", 0, 255);
+
+  SimpleDMA_IFC dma <- mkDma();
+
+  Reg#(Bit#(32)) cycle <- mkReg(0);
+
+  rule count_cycles;
+    cycle <= cycle + 1;
+  endrule
+
+  Stmt test =
+  seq
+    $display("--- DMA TEST BEGIN ---");
+
+    // ----------- AUTO START TEST -----------
+    dma.write(pack(ADDR_SRC), 32'd0);          // index 0 in temp_mem (0x0A)
+    dma.write(pack(ADDR_DST), 32'd10);         // dest starts at index 10
+    dma.write(pack(ADDR_COUNT), 3);
+    dma.write(pack(ADDR_START), 1);            // trigger automatic start
+    
+    $display("Automatic DMA transfer done");
+    
+
+    $display("Checking dest values at 10, 11, 12...");
+    $display("mem[10] = %h", dma.peekMem(32'd10));
+    $display("mem[11] = %h", dma.peekMem(32'd11));
+    $display("mem[12] = %h", dma.peekMem(32'd12));
+
+
+    // ----------- MANUAL START TEST -----------
+    dma.write(pack(ADDR_SRC), 32'd2);          // Start from 3rd word in hex file (0x0C)
+    dma.write(pack(ADDR_DST), 32'd24);         // write to address 24
+    dma.write(pack(ADDR_COUNT), 2);
+    dma.startTransfer();                // call method manually
+
+
+    //$display("Manual DMA transfer done");
+    // Dump memory contents to file
+
+
+
+    $display("Checking dest values at 24, 25...");
+    $display("mem[24] = %h", dma.peekMem(32'd24));
+    $display("mem[24] = %h", dma.peekMem(32'd24));
+    $display("mem[25] = %h", dma.peekMem(32'd25));
+    
+    $display("mem[10] = %h", dma.peekMem(32'd10));
+    $display("mem[11] = %h", dma.peekMem(32'd11));
+    $display("mem[12] = %h", dma.peekMem(32'd12));
+    
+       $display("Checking dest values at 24, 25...");
+    $display("mem[24] = %h", dma.peekMem(32'd24));
+    $display("mem[24] = %h", dma.peekMem(32'd24));
+    $display("mem[25] = %h", dma.peekMem(32'd25));
+    
+    
+    $display("--- DMA TEST END ---");
+    $finish;
+  endseq;
+
+  mkAutoFSM(test);
+
+endmodule
+
+ 
