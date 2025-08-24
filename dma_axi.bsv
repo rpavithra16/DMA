@@ -126,16 +126,13 @@ endrule
    rule write_word (state == WRITE && fifo.notEmpty && m_xactor.i_wr_addr.notFull && m_xactor.i_wr_data.notFull);
     let word = fifo.first;
     fifo.deq;
-
     $display("FSM: WRITE -> Writing word %h to addr %h", word, curr_dst);
-
     let write_data = AXI4_Wr_Data {
         wdata: word,
         wstrb: '1,
         wlast: True,
         wid:   0
     };
-
     let write_addr = AXI4_Wr_Addr {
         awaddr:  curr_dst,
         awuser:  0,
