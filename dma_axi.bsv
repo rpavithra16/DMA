@@ -20,7 +20,7 @@ typedef Bit#(32) RegAddr;
     RegAddr aDDR_START = 'h0006140C;
     RegAddr aDDR_DONE  = 'h00061410;
     RegAddr aDDR_HALF_DONE = 'h00061414;
-    //RegAddr aDDR_ERR = 'h00061418
+    RegAddr aDDR_ERR = 'h00061418
 
 typedef Bit#(32) AxiAddr;//To access control regs
 typedef Bit#(32) AxiData;//Write src memory destn memory no of words start
@@ -77,8 +77,8 @@ module mkDma(SimpleDMA_IFC);
         reg_half_done <= False;
         state      <= READ;
         reg_start  <= False;
-        //timeout    <= 0;
-        //reg_error  <= False; 
+        timeout    <= 0;
+        reg_error  <= False; 
     endrule
 
 rule read_word (state == READ && words_left > 0 && fifo.notFull && m_xactor.i_rd_addr.notFull);
