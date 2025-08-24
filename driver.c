@@ -7,7 +7,7 @@
 #define DMA_START_ADDR      0x0006140C
 #define DMA_DONE_ADDR       0x00061410
 #define DMA_HALF_DONE_ADDR  0x00061414
-//#define DMA_ERROR_ADDR    0x00061418
+#define DMA_ERROR_ADDR    0x00061418
 
 #define MEMORY_SRC          0x81000000
 #define MEMORY_DST          0x82000000  
