@@ -105,11 +105,8 @@ rule capture_read_response (state == READ && m_xactor.o_rd_data.notEmpty && fifo
     let rd_data = m_xactor.o_rd_data.first;
     m_xactor.o_rd_data.deq;
     fifo.enq(rd_data.rdata);
-
     $display("FSM: READ RESPONSE -> Got data %h", rd_data.rdata);
-
     let next = batch_read_responses + 1;
-
     if (next == batch_count || words_left == 0) begin
         $display("FSM: READ BATCH DONE -> moving to WRITE");
         state <= WRITE;
